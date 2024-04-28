@@ -51,6 +51,9 @@
   - name: get products
     ansible.builtin.command:  mongo --host mongodb.jasritha.tech --quiet --eval 'db = db.getSiblingDB("catalogue"); db.products.count()'
     register: products
+  - name: product
+    ansible.builtin.debug:
+      msg:"product is {{products}}"
   - name: Load Schema
     ansible.builtin.command: mongo --host mongodb.jasritha.tech < /app/schema/catalogue.js
     
