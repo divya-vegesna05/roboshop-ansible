@@ -18,7 +18,7 @@
   - name: Download application
     ansible.builtin.get_url:
       url: https://roboshop-builds.s3.amazonaws.com/catalogue.zip
-      dest: /tmp/catalogue.zip 
+      dest: /tmp
   - name: Unarchive a file that is already on the remote machine
     ansible.builtin.unarchive:
       src: /tmp/catalogue.zip
@@ -57,6 +57,10 @@
   - name: Load Schema
     ansible.builtin.command: mongo --host mongodb.jasritha.tech < /app/schema/catalogue.js
     when: products.stdout == 0
+  - name: Restart catalogue
+    ansible.builtin.service:
+      name: catalogue
+      state: restarted
     
 
   
