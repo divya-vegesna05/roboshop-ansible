@@ -49,7 +49,7 @@
       name: mongodb-org-shell
       state: present
   - name: Load Schema
-    ansible.builtin.command: mongo --host mongodb < /app/schema/catalogue.js
+    ansible.builtin.command: mongo --host mongodb.jasritha.tech < /app/schema/catalogue.js
     
 
   
