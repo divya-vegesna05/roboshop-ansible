@@ -28,27 +28,27 @@
     ansible.builtin.command: npm install
     args:
       chdir: /app
-   - name: Catalogue Service
-     ansible.builtin.copy:
-       src: catalogue.service
-       dest: /etc/systemd/system/catalogue.service
-   - name: reload daemon
-     ansible.builtin.systemd_service:
-       daemon_reload: true
-   - name: Enable and start catalogue
-     ansible.builtin.service:
-       name: catalogue
-       state: started
-       enabled: true
-   - name: copy mongo repo
-     ansible.builtin.copy:
+  - name: Catalogue Service
+    ansible.builtin.copy:
+      src: catalogue.service
+      dest: /etc/systemd/system/catalogue.service
+  - name: reload daemon
+    ansible.builtin.systemd_service:
+      daemon_reload: true
+  - name: Enable and start catalogue
+    ansible.builtin.service:
+      name: catalogue
+      state: started
+      enabled: true
+  - name: copy mongo repo
+    ansible.builtin.copy:
       src: mongo.repo
       dest: /etc/yum.repos.d/mongo.repo
-    - name: Install mongodb
-      ansible.builtin.package:
-        name: mongodb-org-shell
-        state: present
-    - name: Load Schema
+  - name: Install mongodb
+    ansible.builtin.package:
+      name: mongodb-org-shell
+      state: present
+  - name: Load Schema
     ansible.builtin.command: mongo --host mongodb < /app/schema/catalogue.js
     
 
