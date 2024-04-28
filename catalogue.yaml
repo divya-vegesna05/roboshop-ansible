@@ -11,6 +11,10 @@
   - name: add user roboshop
     ansible.builtin.user:
       name: roboshop
+  - name: remove app directory
+    ansible.builtin.file:
+      path: /app
+      state: absent
   - name: create app directory
     ansible.builtin.file:
       path: /app
@@ -43,19 +47,19 @@
   - name: copy mongo repo
     ansible.builtin.copy:
       src: mongo.repo
-      dest: /etc/yum.repos.d/mongo.repo
+      dest: /etc/yum.repos.d/mongodb.repo
   - name: Install mongodb
     ansible.builtin.package:
       name: mongodb-org-shell
       state: present
   - name: get products
-    ansible.builtin.command:  mongo --host mongodb.jasritha.tech --quiet --eval 'db = db.getSiblingDB("catalogue"); db.products.count()'
+    ansible.builtin.shell:  mongo --host mongodb.jasritha.tech --quiet --eval 'db = db.getSiblingDB("catalogue"); db.products.count()'
     register: products
-  - name: product
+  - name: load catalogue data
     ansible.builtin.debug:
       msg: "product is {{products}}"
   - name: Load Schema
-    ansible.builtin.command: mongo --host mongodb.jasritha.tech < /app/schema/catalogue.js
+    ansible.builtin.shell: mongo --host mongodb.jasritha.tech < /app/schema/catalogue.js
     when: products.stdout == "0"
   - name: Restart catalogue
     ansible.builtin.service:
