@@ -59,7 +59,7 @@
     ansible.builtin.debug:
       msg: "schema output is {{schema}}"
   - name: Load Schema
-    ansible.builtin.command: "mysql -h mysql.jasritha.tech -uroot -p{{mysql_password}}  < /app/schema/shipping.sql"
+    ansible.builtin.shell: "mysql -h mysql.jasritha.tech -uroot -p{{mysql_password}}  < /app/schema/shipping.sql"
     when: schema.stdout != "1"
   - name: Restart shipping
     ansible.builtin.service:
