@@ -12,7 +12,7 @@
       state: present
   - name: Enable and start monod
     ansible.builtin.service:
-      name: mongodb
+      name: mongod
       state: started
       enabled: true
   - name: replace conf file
@@ -20,6 +20,10 @@
       path: /etc/mongod.conf
       regexp: '127.0.0.1'
       replace: '0.0.0.0'
-    
+  - name: Enable and start monod
+    ansible.builtin.service:
+      name: mongod
+      state: restarted
+  
     
   
