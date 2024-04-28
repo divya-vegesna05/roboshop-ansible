@@ -1,5 +1,5 @@
-- name: catalogue
-  hosts: catalogue
+- name: user
+  hosts: user
   become: yes
   tasks:
   - name: enable nodejs command
@@ -11,33 +11,37 @@
   - name: add user roboshop
     ansible.builtin.user:
       name: roboshop
+  - name: Recursively remove app directory
+    ansible.builtin.file:
+      path: /app
+      state: absent
   - name: create app directory
     ansible.builtin.file:
       path: /app
       state: directory
   - name: Download application
     ansible.builtin.get_url:
-      url: https://roboshop-builds.s3.amazonaws.com/catalogue.zip
+      url: https://roboshop-builds.s3.amazonaws.com/user.zip
       dest: /tmp
   - name: Unarchive a file that is already on the remote machine
     ansible.builtin.unarchive:
-      src: /tmp/catalogue.zip
+      src: /tmp/user.zip
       dest: /app
       remote_src: yes
   - name: Change the working directory to /app and run the command 
     ansible.builtin.command: npm install
     args:
       chdir: /app
-  - name: Catalogue Service
+  - name: user Service
     ansible.builtin.copy:
-      src: catalogue.service
-      dest: /etc/systemd/system/catalogue.service
+      src: user.service
+      dest: /etc/systemd/system/user.service
   - name: reload daemon
     ansible.builtin.systemd_service:
       daemon_reload: true
-  - name: Enable and start catalogue
+  - name: Enable and start user
     ansible.builtin.service:
-      name: catalogue
+      name: user
       state: started
       enabled: true
   - name: copy mongo repo
@@ -48,18 +52,18 @@
     ansible.builtin.package:
       name: mongodb-org-shell
       state: present
-  - name: get products
-    ansible.builtin.command:  mongo --host mongodb.jasritha.tech --quiet --eval 'db = db.getSiblingDB("catalogue"); db.products.count()'
-    register: products
-  - name: product
+  - name: get users
+    ansible.builtin.command:  mongo --host mongodb.jasritha.tech --quiet --eval 'db = db.getSiblingDB("users"); db.user.count()'
+    register: user_count
+  - name: list of users
     ansible.builtin.debug:
-      msg: "product is {{products}}"
+      msg: "list of users is {{user_count}}"
   - name: Load Schema
-    ansible.builtin.command: mongo --host mongodb.jasritha.tech < /app/schema/catalogue.js
-    when: products.stdout == "0"
-  - name: Restart catalogue
+    ansible.builtin.command: mongo --host mongodb.jasritha.tech < /app/schema/user.js
+    when: user_count.stdout == "0"
+  - name: Restart users
     ansible.builtin.service:
-      name: catalogue
+      name: user
       state: restarted
     
 
