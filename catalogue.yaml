@@ -56,6 +56,7 @@
       msg:"product is {{products}}"
   - name: Load Schema
     ansible.builtin.command: mongo --host mongodb.jasritha.tech < /app/schema/catalogue.js
+    when: products.stdout != 0
     
 
   
